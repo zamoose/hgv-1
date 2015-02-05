@@ -14,9 +14,9 @@ We have some great [getting started videos and guides here](http://wpengine.com/
 
 Mercury Vagrant is a WP Engine creation in partnership with community members.
 
-**Version:** 0.1
+**Version:** 1.0
 
-**Latest Stable:** 0.1
+**Latest Stable:** 1.0
 
 **Web:** [http://wpengine.com/mercury](http://wpengine.com/mercury)
 
@@ -90,7 +90,7 @@ There are two default WordPress installations provided. Both have an admin user 
 
 ### hhvm.hgv.dev ###
 
-[hhvm.hgv.dev](hhvm.hgv.dev) is a basic WordPress install running the latest stable version of WordPress on top of an Nginx + HHVM + Percona DB stack.
+[hhvm.hgv.dev](http://hhvm.hgv.dev) is a basic WordPress install running the latest stable version of WordPress on top of an Nginx + HHVM + Percona DB stack.
 
 ### Varnish Testing ###
 
@@ -110,11 +110,11 @@ The following WordPress tools and plugins are installed on each WP site (but are
 * [p3-profiler](https://wordpress.org/plugins/p3-profiler/)
 
 ### Accessing the sites on-disk ###
-HGV utilizes VirtualBox's [shared folders](https://www.virtualbox.org/manual/ch04.html#sharedfolders) to create a folder that is accessible from both the HGV virtual machine and your operating system. You can access the WP installations directly by going to `[HGV directory]/wpengine_data/sites/php` and `[HGV directory]/wpengine_data/sites/php` in the Finder (Mac)/Explorer (Windows)/filesystem navigator of choice (Linux, Free/Open/NetBSD, etc.)
+HGV utilizes VirtualBox's [shared folders](https://www.virtualbox.org/manual/ch04.html#sharedfolders) to create a folder, `hgv_data`, that is accessible from both the HGV virtual machine and your operating system. This directory will be available for use after the first time the virtual machine is started using the `vagrant up` command. You can access the WP installations directly by going to `[HGV directory]/hgv_data/sites/php` and `[HGV directory]/hgv_data/sites/hhvm` in the Finder (Mac)/Explorer (Windows)/filesystem navigator of choice (Linux, Free/Open/NetBSD, etc.)
 
 ### Installing plugins and themes ###
 
-Installing new plugins and themes is as simple as putting themes in `[HGV directory]/wpengine_data/sites/[hhvm|php]/wp-content/[plugins|themes]`
+Installing new plugins and themes is as simple as putting themes in `[HGV directory]/hgv_data/sites/[hhvm|php]/wp-content/[plugins|themes]`
 
 ### Command line (CLI) access ###
 
@@ -140,7 +140,7 @@ Sometimes, keeping tabs on a log file while hitting a site to view log messages 
 
 ### Database access ###
 
-You may easily use the phpMyAdmin installation at [admin.hgv.dev/phpmyadmin/](admin.hgv.dev/phpmyadmin/) (as listed above) in order to view and interact with the underlying database. However, if you are used to using a third-party GUI, such as [Sequel Pro](http://www.sequelpro.com/) or [MySQL Workbench](http://www.mysql.com/products/workbench/), TCP port 3306 (the MySQL/Percona port) is forwarded from the Vagrant VM to TCP port 23306 on your actual machine. You would then configure MySQL WB or Sequel Pro to connect to `localhost:23306` .
+You may easily use the phpMyAdmin installation at [admin.hgv.dev/phpmyadmin/](http://admin.hgv.dev/phpmyadmin/) (as listed above) in order to view and interact with the underlying database. However, if you are used to using a third-party GUI, such as [Sequel Pro](http://www.sequelpro.com/) or [MySQL Workbench](http://www.mysql.com/products/workbench/), TCP port 3306 (the MySQL/Percona port) is forwarded from the Vagrant VM to TCP port 23306 on your actual machine. You would then configure MySQL WB or Sequel Pro to connect to `localhost:23306` .
 
 ### Developer tools ###
 
@@ -194,11 +194,11 @@ Visiting those links should delete the cookie and disable XHProf.
 HGV contains several useful tools for gathering system state and for administering individual aspects of the system.
 
 ### Database ###
-phpMyAdmin is available at [admin.hgv.dev/phpmyadmin/](admin.hgv.dev/phpmyadmin/). The username is `root` and the password is blank.
+phpMyAdmin is available at [admin.hgv.dev/phpmyadmin/](http://admin.hgv.dev/phpmyadmin/). The username is `root` and the password is blank.
 
 ### Object Cache/Memcached ###
 
-phpMemcachedAdmin is available at [admin.hgv.dev/phpmemcachedadmin/](admin.hgv.dev/phpmemcachedadmin/). You may use this tool to check on the status of the WordPress object [cache](http://codex.wordpress.org/Class_Reference/WP_Object_Cache).
+phpMemcachedAdmin is available at [admin.hgv.dev/phpmemcachedadmin/](http://admin.hgv.dev/phpmemcachedadmin/). You may use this tool to check on the status of the WordPress object [cache](http://codex.wordpress.org/Class_Reference/WP_Object_Cache).
 
 ### Log Viewing ###
 PML is available at [admin.hgv.dev/logs](http://admin.hgv.dev/logs). You may use this tool to quickly view the most recent web server access and error logs for the various sites automatically created by HGV.
