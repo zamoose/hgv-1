@@ -4,6 +4,26 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+require 'yaml'
+
+domains_array = []
+coredomains = YAML.load_file(File.join(vagrant_dir,'provisioning/domains.yaml'))
+coredomains['vagrant_hosts'].each { |host, value|
+    value['domains'].each { |domain|
+        domains_array += [domain]
+    }
+}
+
+if File.exists?(File.join(vagrant_dir,'hgv_data/customdomains.yaml')) then
+    customdomains = YAML.load_file(File.join(vagrant_dir,'hgv_data/customdomains.yaml'))
+    customdomains['vagrant_hosts'].each { |host, value|
+        value['domains'].each { |domain|
+            domains_array += [domain]
+        }
+    }
+end
+
+
 dir = Dir.pwd
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 vagrant_name = File.basename(dir)
@@ -27,14 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder "./hgv_data", "/hgv_data", owner: "www-data", group: "www-data", create: "true"
 
     if defined? VagrantPlugins::HostsUpdater
-        config.hostsupdater.aliases = [
-            "hhvm.hgv.dev",
-            "php.hgv.dev",
-            "cache.hhvm.hgv.dev",
-            "cache.php.hgv.dev",
-            "admin.hgv.dev",
-            "xhprof.hgv.dev"
-        ]
+        config.hostsupdater.aliases = domains_array
     end
 
     # This allows the git commands to work using host server keys
