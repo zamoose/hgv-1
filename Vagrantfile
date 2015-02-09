@@ -6,6 +6,11 @@ VAGRANTFILE_API_VERSION = "2"
 
 require 'yaml'
 
+
+dir = Dir.pwd
+vagrant_dir = File.expand_path(File.dirname(__FILE__))
+vagrant_name = File.basename(dir)
+
 domains_array = []
 coredomains = YAML.load_file(File.join(vagrant_dir,'provisioning/domains.yaml'))
 coredomains['vagrant_hosts'].each { |host, value|
@@ -22,11 +27,6 @@ if File.exists?(File.join(vagrant_dir,'hgv_data/customdomains.yaml')) then
         }
     }
 end
-
-
-dir = Dir.pwd
-vagrant_dir = File.expand_path(File.dirname(__FILE__))
-vagrant_name = File.basename(dir)
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "ubuntu/trusty64"
