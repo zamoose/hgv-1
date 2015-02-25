@@ -1,0 +1,42 @@
+---
+# Root-level array members should roughly line up with
+# Ansible host groups
+
+# Top level Ansible group containing HGV info.
+# Should probably only ever contain one host.
+vagrant_hosts:
+  # These map to the "hosts:" portion of the inventory
+  hgv.dev:
+    # Everything per-host maps to the "vars:" portion of the inventory
+    # Domains to pass to vagrant-hostsupdater
+    domains:
+      - mail.hgv.dev
+      - hgv.dev
+      - php.hgv.dev
+      - hhvm.hgv.dev
+      - vvv.hgv.dev
+      - admin.hgv.dev
+      - nowp.hgv.dev
+    # Blank/generic sites to configure virtualhosts for
+    sites:
+      nowp.hgv.dev:
+        comment: Non-wordpress
+
+    # WordPress sites to pre-configure
+    wpsites:
+      vvv.hgv.dev:
+        comment: VVV
+        wp_version: 4.1
+        plugins:
+          - debug-bar
+          - wordpress-seo
+        themes:
+          - elbee-elgee
+          - hemingway
+
+# Potential other Ansible host groups, ultimately up to anyone deploying
+# HGV-powered images in their own infrastructure
+
+# production:
+# staging:
+# development:
