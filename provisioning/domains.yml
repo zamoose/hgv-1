@@ -1,32 +1,83 @@
 ---
-# Root-level array members should roughly line up with
+#
+# Core Ansible config hints file.
+#
+# Root-level array members should line up with
 # Ansible host groups
+#
+# Ansible expects JSON output from a dynamic inventory,
+# as per http://docs.ansible.com/developing_inventory.html#script-conventions
+#
+# Using the supplied inventory file, HGV should output JSON
+# roughly similar to:
+#
+# {
+#     "hgv_hosts": {
+#         "hosts": [
+#             "127.0.0.1"
+#         ],
+#         "vars": {
+#             "domains": [
+#                 "hgv.dev",
+#                 "fpm.hgv.dev",
+#                 "hhvm.hgv.dev",
+#                 "php.hgv.dev",
+#                 "mail.hgv.dev",
+#                 "admin.hgv.dev",
+#                 "nowp.hgv.dev"
+#             ],
+#             "sites": {
+#                 "nowp.hgv.dev": {
+#                     "comment": "Non-wordpress"
+#                 }
+#             },
+#             "wpsites": {
+#                 "vvv.hgv.dev": {
+#                     "comment": "VVV",
+#                     "wp_version": "latest",
+#                     "plugins": [
+#                         "debug-bar",
+#                         "wordpress-seo"
+#                     ],
+#                     "themes": [
+#                         "elbee-elgee",
+#                         "hemingway"
+#                     ]
+#                 }
+#             }
+#         }
+#     }
+# }
 
 # Top level Ansible group containing HGV info.
 # Should probably only ever contain one host.
-vagrant_hosts:
-  # These map to the "hosts:" portion of the inventory
-  hgv.dev:
-    # Everything per-host maps to the "vars:" portion of the inventory
-    # Domains to pass to vagrant-hostsupdater
+hgv_hosts:
+  #
+  # Domains to pass to vagrant-hostsupdater.
+  # These will only get parsed by the Vagrantfile and
+  # have no bearing on Ansible.
+  #
+  hosts:
+    - 127.0.0.1
+  vars:
     domains:
-      - mail.hgv.dev
       - hgv.dev
-      - php.hgv.dev
+      - fpm.hgv.dev
       - hhvm.hgv.dev
-      - vvv.hgv.dev
+      - php.hgv.dev
+      - mail.hgv.dev
       - admin.hgv.dev
       - nowp.hgv.dev
+      - foo.hgv.dev
     # Blank/generic sites to configure virtualhosts for
     sites:
       nowp.hgv.dev:
         comment: Non-wordpress
-
     # WordPress sites to pre-configure
     wpsites:
       vvv.hgv.dev:
         comment: VVV
-        wp_version: 4.1
+        wp_version: latest
         plugins:
           - debug-bar
           - wordpress-seo
@@ -38,5 +89,8 @@ vagrant_hosts:
 # HGV-powered images in their own infrastructure
 
 # production:
+#   domains:
+#   hosts:
+#   vars:
 # staging:
 # development:
