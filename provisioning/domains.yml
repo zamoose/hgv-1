@@ -68,7 +68,6 @@ hgv_hosts:
       - mail.hgv.dev
       - admin.hgv.dev
       - nowp.hgv.dev
-      - foo.hgv.dev
     # Blank/generic sites to configure virtualhosts for
     sites:
       nowp.hgv.dev:
