@@ -33,9 +33,9 @@ if( file_exists( $core_file ) ) {
 
     // print_r( $core_inventory );
     //
-	echo "\n";
-	echo "Core Inventory";
-    print_r(json_encode($core_inventory, JSON_PRETTY_PRINT ));
+	// echo "\n";
+	// echo "Core Inventory";
+    // print_r(json_encode($core_inventory, JSON_PRETTY_PRINT ));
 } else {
     echo "ABORTING RUN. Core config file missing.";
 }
@@ -65,17 +65,18 @@ if( file_exists( $custom_file ) ) {
 	// 	);
 	// }
 	// print_r(json_encode($inventory_array, JSON_PRETTY_PRINT ));
-	echo "\n";
-	echo "Custom Inventory";
-	print_r(json_encode($custom_inventory, JSON_PRETTY_PRINT ));
+	// echo "\n";
+	// echo "Custom Inventory";
+	// print_r(json_encode($custom_inventory, JSON_PRETTY_PRINT ));
 
-	$final_inventory = array_merge_recursive( $core_inventory, $custom_inventory );
-	$final_intersect = array_intersect( $core_inventory, $custom_inventory );
-
-	echo "\n";
-	echo "Merged Inventory";
-	print_r(json_encode($final_inventory, JSON_PRETTY_PRINT ));
-	echo "\n";
-	echo "Intersected Inventory";
-	print_r(json_encode($final_intersect, JSON_PRETTY_PRINT ));
+	// $final_inventory['hgv_hosts']['hosts'] = array_merge( $core_inventory['hgv_hosts']['hosts'], $custom_inventory['hgv_hosts']['hosts'] );
+	$final_inventory['hgv_hosts']['hosts'] = $core_inventory['hgv_hosts']['hosts'] + $custom_inventory['hgv_hosts']['hosts'];
+	$final_inventory['hgv_hosts']['vars']['domains'] = array_unique( array_merge( $core_inventory['hgv_hosts']['vars']['domains'], $custom_inventory['hgv_hosts']['vars']['domains'] ), SORT_REGULAR );
+	// $final_inventory['hgv_hosts']['vars']['domains'] = $core_inventory['hgv_hosts']['vars']['domains'] + $custom_inventory['hgv_hosts']['vars']['domains'];
+	// $final_inventory['hgv_hosts']['vars'] = array_merge_recursive( $core_inventory['hgv_hosts']['vars'], $custom_inventory['hgv_hosts']['vars'] );
+} else {
+	$final_inventory = $core_inventory;
 }
+
+// Output the inventory in JSON format
+print_r(json_encode($final_inventory, JSON_PRETTY_PRINT ));
