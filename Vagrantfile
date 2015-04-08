@@ -21,8 +21,6 @@ if File.exists?(hgv_custom_file) then
     domains_array | customdomains['hgv_hosts']['vars']['domains']
 end
 
-print domains_array
-
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "ubuntu/trusty64"
     config.vm.hostname = "hgv.dev"
@@ -34,7 +32,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |vb|
-        vb.customize ["modifyvm", :id, "--memory", "1024"]
+        # vb.customize ["modifyvm", :id, "--memory", "1024"]
+        vb.customize ["modifyvm", :id, "--memory", "512"]
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         vb.name = vagrant_name

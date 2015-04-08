@@ -44,3 +44,15 @@
 
 - include: swap.yml
 - include: daemonize.yml
+
+# - debug:
+#     var: domains
+#   tags: [ 'debug' ]
+#
+# - debug:
+#     var: sites
+#   tags: [ 'debug' ]
+#
+# - debug:
+#     var: wpsites
+#   tags: [ 'debug' ]

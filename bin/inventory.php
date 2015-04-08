@@ -32,7 +32,7 @@ if( file_exists( $core_file ) ) {
     }
 
     // print_r( $core_inventory );
-    //
+	//
 	// echo "\n";
 	// echo "Core Inventory";
     // print_r(json_encode($core_inventory, JSON_PRETTY_PRINT ));
@@ -49,31 +49,11 @@ if( file_exists( $custom_file ) ) {
 		$custom_inventory[$group]['hosts'] = $values['hosts'];
 		$custom_inventory[$group]['vars'] = $values['vars'];
 	}
-	// if( !empty($options['host'] ) ) {
-	// 	echo "Host: " . $options['host'];
-	// }
-	// foreach ( $inventory as $group => $values ) {
-	// 	$hosts = array();
-	// 	$ans_vars = array();
-	// 	foreach ( $values as $host => $vars ){
-	// 		$hosts[] = $host;
-	// 		$ans_vars[] = $vars;
-	// 	}
-	// 	$inventory_array[$group] = array(
-	// 		"hosts"	=> $hosts,
-	// 		"vars"	=> $ans_vars
-	// 	);
-	// }
-	// print_r(json_encode($inventory_array, JSON_PRETTY_PRINT ));
-	// echo "\n";
-	// echo "Custom Inventory";
-	// print_r(json_encode($custom_inventory, JSON_PRETTY_PRINT ));
 
-	// $final_inventory['hgv_hosts']['hosts'] = array_merge( $core_inventory['hgv_hosts']['hosts'], $custom_inventory['hgv_hosts']['hosts'] );
 	$final_inventory['hgv_hosts']['hosts'] = $core_inventory['hgv_hosts']['hosts'] + $custom_inventory['hgv_hosts']['hosts'];
 	$final_inventory['hgv_hosts']['vars']['domains'] = array_unique( array_merge( $core_inventory['hgv_hosts']['vars']['domains'], $custom_inventory['hgv_hosts']['vars']['domains'] ), SORT_REGULAR );
-	// $final_inventory['hgv_hosts']['vars']['domains'] = $core_inventory['hgv_hosts']['vars']['domains'] + $custom_inventory['hgv_hosts']['vars']['domains'];
-	// $final_inventory['hgv_hosts']['vars'] = array_merge_recursive( $core_inventory['hgv_hosts']['vars'], $custom_inventory['hgv_hosts']['vars'] );
+	$final_inventory['hgv_hosts']['vars']['sites'] = array_unique( array_merge( $core_inventory['hgv_hosts']['vars']['sites'], $custom_inventory['hgv_hosts']['vars']['sites'] ), SORT_REGULAR );
+	$final_inventory['hgv_hosts']['vars']['wpsites'] = array_unique( array_merge( $core_inventory['hgv_hosts']['vars']['wpsites'], $custom_inventory['hgv_hosts']['vars']['wpsites'] ), SORT_REGULAR );
 } else {
 	$final_inventory = $core_inventory;
 }

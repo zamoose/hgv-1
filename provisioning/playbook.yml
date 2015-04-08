@@ -50,6 +50,6 @@
         domain: "php.hgv.dev",
         tags: [ 'wordpress' ]
       }
+    - wpsites
     - admin
     - xhprof
-
