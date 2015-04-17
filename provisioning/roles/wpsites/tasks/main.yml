@@ -14,6 +14,16 @@
   with_dict: wpsites
   tags: [ 'wpsites' ]
 
+- name: "Provision cache.{{ item.key }} PHP virtualhost"
+  template:
+    src: etc/nginx/conf.d/wpcache.conf
+    dest: /etc/nginx/conf.d/cache.{{ item.key }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_dict: wpsites
+  tags: [ 'wpsites' ]
+
 - name: "Set facts for HHVM run"
   set_fact:
     wpbackend: hhvm
@@ -22,7 +32,17 @@
 - name: "Provision {{ item.key }} hhvm virtualhost"
   template:
     src: etc/nginx/conf.d/wpsites.conf
-    dest: /etc/nginx/conf.d/hhvm-{{ item.key }}.conf
+    dest: /etc/nginx/conf.d/hhvm.{{ item.key }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_dict: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Provision cache.{{ item.key }} hhvm virtualhost"
+  template:
+    src: etc/nginx/conf.d/wpcache.conf
+    dest: /etc/nginx/conf.d/cache.hhvm.{{ item.key }}.conf
     owner: root
     group: root
     mode: 0644
