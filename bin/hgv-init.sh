@@ -47,6 +47,19 @@ echo "Validating Ansible hostfile permissions."
 echo
 chmod 644 /vagrant/provisioning/hosts
 
+PHP_BIN=`which php`
+
+if [[ -z $PHP_BIN ]]
+    then
+    echo "Installing PHP for dynamic inventory."
+    echo
+
+    apt-get -y install php5-fpm php5 php5-cli php5-dev php-pear libyaml-dev
+    pecl install yaml
+    echo "extension=yaml.so" > /etc/php5/mods-available/yaml.ini
+    php5enmod yaml
+fi
+
 # More continuous scroll of the ansible standard output buffer
 export PYTHONUNBUFFERED=1
 
