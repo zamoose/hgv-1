@@ -1,0 +1,15 @@
+---
+- name: "Provision WP Databases"
+  mysql_db: name="wpe_{{ item.site | regex_replace('\.','') }}" state=present
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Grant WP users access to WP DBs"
+  mysql_user: name="wpe_{{ item.site | regex_replace('\.','') }}" priv="wpe_{{ item.site | regex_replace('\.','') }}.*:ALL" host="%" password=wordpress state=present
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Grant WP users access to WP DBs"
+  mysql_user: name="wpe_{{ item.site | regex_replace('\.','') }}" priv="wpe_{{ item.site | regex_replace('\.','') }}.*:ALL" host="localhost" password=wordpress state=present
+  with_items: wpsites
+  tags: [ 'wpsites' ]

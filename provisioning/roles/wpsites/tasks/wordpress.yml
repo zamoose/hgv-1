@@ -1,0 +1,142 @@
+---
+- name: "Set up WordPress docroots"
+  file:
+    path: "{{ wp_doc_root }}/{{ item.site }}"
+    state: directory
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+#
+# This section registers several lists of various WP items:
+#
+#  * Whether WP has been downloaded and expanded in a directory
+#  * Whether a wp-config.php has been created
+#  * Whether the WP install process has actually been run
+#
+# If any of these checks fail, we do the necessary steps. If the
+# checks succeed, we skip via Ansible's `with_together` construct.
+#
+- name: Check for WordPress downloads
+  stat:
+    path: "{{ wp_doc_root}}/{{ item.site }}/readme.html"
+  register: wpdownloads
+  ignore_errors: true
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: Check for WordPress configs
+  stat:
+    path: "{{ wp_doc_root}}/{{ item.site }}/wp-config.php"
+  register: wpconfigs
+  ignore_errors: true
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: Check for WordPress localconfigs
+  stat:
+    path: "{{ wp_doc_root}}/{{ item.site }}/local-config.php"
+  register: localconfigs
+  ignore_errors: true
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: Check for WordPress installs
+  command: /usr/local/bin/wp core is-installed --path={{ wp_doc_root}}/{{ item.site }}
+  sudo: yes
+  sudo_user: "{{ web_user }}"
+  register: wpinstalls
+  ignore_errors: true
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+#
+# Grab the actual WP instal files.
+#
+- name: "Download and install WordPress"
+  command: /usr/local/bin/wp core download --path={{ wp_doc_root}}/{{ item.1.site }}
+  sudo: yes
+  sudo_user: "{{ web_user }}"
+  when: not item.0.stat.exists
+  with_together:
+    - wpdownloads.results
+    - wpsites
+  tags: [ 'wpsites' ]
+
+#
+# Grab the cookie salts from wp.org.
+#
+- name: Fetch random salts for WordPress config
+  uri:
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    return_content: yes
+  register: wpsalts
+  tags: [ 'wpsites' ]
+
+#
+# Template out the wp-config.php files only if they're not
+# already present
+#
+- name: "Create wp-configs"
+  template:
+    src: wp/wp-config.php
+    dest: "{{ wp_doc_root }}/{{ item.1.site }}/wp-config.php"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+  when: not item.0.stat.exists
+  with_together:
+    - wpconfigs.results
+    - wpsites
+  tags: [ 'wpsites' ]
+
+#
+# Template out the local-config.php files only if they're not
+# already present
+#
+- name: "Create localconfigs"
+  template:
+    src: wp/local-config.php
+    dest: "{{ wp_doc_root }}/{{ item.1.site }}/local-config.php"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+  when: not item.0.stat.exists
+  with_together:
+    - localconfigs.results
+    - wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Install Object Caches"
+  template:
+    src: wp/object-cache.php
+    dest: "{{ wp_doc_root }}/{{ item.site }}/wp-content/object-cache.php"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Run the WP installs"
+  command: /usr/local/bin/wp core install --url={{ item.1.site }} --title="{{ item.1.comment }}" --admin_user=wordpress --admin_password=wordpress --admin_email="admin@example.com" --path={{ wp_doc_root }}/{{ item.1.site }}
+  sudo: yes
+  sudo_user: "{{ web_user }}"
+  when: item.0.rc
+  with_together:
+    - wpinstalls.results
+    - wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Install requested plugins"
+  command: /usr/local/bin/wp plugin install {{ item.plugins }} --path={{ wp_doc_root }}/{{ item.site }}
+  sudo: yes
+  sudo_user: "{{ web_user }}"
+  when: item.plugins is defined
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Install requested themes"
+  command: /usr/local/bin/wp theme install {{ item.themes }} --path={{ wp_doc_root }}/{{ item.site }}
+  sudo: yes
+  sudo_user: "{{ web_user }}"
+  when: item.themes is defined
+  with_items: wpsites
+  tags: [ 'wpsites' ]

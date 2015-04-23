@@ -1,0 +1,51 @@
+---
+- name: "Set facts for PHP run"
+  set_fact:
+    wpbackend: php
+  tags: [ 'wpsites' ]
+
+- name: "Provision PHP virtualhosts"
+  template:
+    src: etc/nginx/conf.d/wpsites.conf
+    dest: /etc/nginx/conf.d/{{ item.site }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Provision cached PHP virtualhosts"
+  template:
+    src: etc/nginx/conf.d/wpcache.conf
+    dest: /etc/nginx/conf.d/cache.{{ item.site }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Set facts for HHVM run"
+  set_fact:
+    wpbackend: hhvm
+  tags: [ 'wpsites' ]
+
+- name: "Provision hhvm virtualhosts"
+  template:
+    src: etc/nginx/conf.d/wpsites.conf
+    dest: /etc/nginx/conf.d/hhvm.{{ item.site }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
+- name: "Provision cached hhvm virtualhosts"
+  template:
+    src: etc/nginx/conf.d/wpcache.conf
+    dest: /etc/nginx/conf.d/cache.hhvm.{{ item.site }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+  
