@@ -7,18 +7,18 @@ VAGRANTFILE_API_VERSION = "2"
 dir = Dir.pwd
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 vagrant_name = File.basename(dir)
-hgv_core_file = File.join(vagrant_dir,'provisioning/domains.yml')
-hgv_custom_file = File.join(vagrant_dir,'hgv_data/customdomains.yml')
+hgv_core_file = File.join(vagrant_dir,'provisioning/coresites.yml')
+hgv_custom_file = File.join(vagrant_dir,'hgv_data/customsites.yml')
 
 require 'yaml'
 
 domains_array = []
 coredomains = YAML.load_file(hgv_core_file)
-domains_array += coredomains['hgv_hosts']['vars']['domains']
+domains_array += coredomains['coredomains']
 
 if File.exists?(hgv_custom_file) then
     customdomains = YAML.load_file(hgv_custom_file)
-    domains_array | customdomains['hgv_hosts']['vars']['domains']
+    domains_array = domains_array | customdomains['customdomains']
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
