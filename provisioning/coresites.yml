@@ -1,0 +1,23 @@
+---
+coredomains:
+  - fpm.hgv.dev
+  - hhvm.hgv.dev
+  - php.hgv.dev
+  - mail.hgv.dev
+  - admin.hgv.dev
+  - nowp.hgv.dev
+# Blank/generic sites to configure virtualhosts for
+coresites:
+  - nowp.hgv.dev:
+      comment: Non-wordpress
+# WordPress sites to pre-configure
+corewpsites:
+  - vvv.hgv.dev:
+     comment: VVV
+     wp_version: latest
+     plugins:
+       - debug-bar
+       - wordpress-seo
+     themes:
+       - elbee-elgee
+       - hemingway
