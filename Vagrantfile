@@ -14,11 +14,29 @@ require 'yaml'
 
 domains_array = []
 coredomains = YAML.load_file(hgv_core_file)
-domains_array += coredomains['coredomains']
 
+# Load core domains
+coredomains['coredomains'].each do |domain|
+    domains_array.push(domain)
+    domains_array.push('cache.' << domain)
+end
+
+# Conditionally load custom domains
 if File.exists?(hgv_custom_file) then
-    customdomains = YAML.load_file(hgv_custom_file)
-    domains_array = domains_array | customdomains['customdomains']
+    customfile = YAML.load_file(hgv_custom_file)
+    customdomains = customfile['customdomains']
+    tmpdomains = []
+
+    customfile['customdomains'].each do |domain|
+        tmpdomains.push('hhvm.' << domain)
+    end
+    customdomains += tmpdomains
+
+    domains_array = domains_array | customdomains
+
+    customdomains.each do |domain|
+        domains_array.push('cache.' << domain)
+    end
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -32,8 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |vb|
-        # vb.customize ["modifyvm", :id, "--memory", "1024"]
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         vb.name = vagrant_name
