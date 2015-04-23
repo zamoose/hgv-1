@@ -14,3 +14,6 @@ web_user: www-data
 web_group: www-data
 
 xhprof_root: /opt/xhprof
+
+coresites_file: /vagrant/provisioning/coresites.yml
+customsites_file: /vagrant/hgv_data/customsites.yml
