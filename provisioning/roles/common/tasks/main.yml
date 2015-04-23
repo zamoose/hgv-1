@@ -1,4 +1,30 @@
 ---
+- name: Import HGV core variables
+  include_vars: "{{ coresites_file }}"
+
+- name: Check for existence of custom variables file
+  stat:
+    path: "{{ customsites_file }}"
+  register: customfile
+
+- name: Import custom variables
+  include_vars: "{{ customsites_file }}"
+  when: customfile.stat.exists
+
+- name: Set up facts (core and custom)
+  set_fact:
+      hgv_hosts: "{{ coredomains|union(customdomains) }}"
+      wpsites: "{{ corewpsites + customwpsites }}"
+      sites: "{{ coresites + customsites }}"
+  when: customfile.stat.exists
+
+- name: Set up facts (core-only)
+  set_fact:
+      hgv_hosts: coredomains
+      wpsites: corewpsites
+      sites: coresites
+  when: not customfile.stat.exists
+
 - name: Uninstall deprecated packages or ones we don't want anymore
   apt: name={{ item }} state=absent purge=yes
   with_items:
@@ -30,8 +56,6 @@
 - name: Install Boris
   get_url: url=https://github.com/d11wtq/boris/releases/download/v1.0.8/boris.phar dest=/usr/local/bin/boris mode=0755 validate_certs=no
 
-# - name: Set up host entries
-#   lineinfile: dest=/etc/hosts line="127.0.0.1 hhvm.hgv.dev php.hgv.dev cache.php.hgv.dev cache.hhvm.hgv.dev admin.hgv.dev"
 - name: Set up host entries
   template:
     src: hosts.j2
@@ -44,15 +68,3 @@
 
 - include: swap.yml
 - include: daemonize.yml
-
-# - debug:
-#     var: domains
-#   tags: [ 'debug' ]
-#
-# - debug:
-#     var: sites
-#   tags: [ 'debug' ]
-#
-# - debug:
-#     var: wpsites
-#   tags: [ 'debug' ]
