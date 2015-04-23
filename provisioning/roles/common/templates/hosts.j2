@@ -8,8 +8,4 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 127.0.0.1 hgv.dev hgv
-{% for host in groups['hgv_hosts'] %}
-{% for domain in hostvars[host]['domains'] %}
-127.0.0.1 {{ domain }}
-{% endfor %}
-{% endfor %}
+127.0.0.1 {% for domain in hgv_hosts %}{{ domain }} {% endfor %}
