@@ -1,15 +1,18 @@
 ---
 - name: Import HGV core variables
   include_vars: "{{ coresites_file }}"
+  tags: [ 'common', 'facts' ]
 
 - name: Check for existence of custom variables file
   stat:
     path: "{{ customsites_file }}"
   register: customfile
+  tags: [ 'common', 'facts' ]
 
 - name: Import custom variables
   include_vars: "{{ customsites_file }}"
   when: customfile.stat.exists
+  tags: [ 'common', 'facts' ]
 
 - name: Set up facts (core and custom)
   set_fact:
@@ -17,6 +20,7 @@
       wpsites: "{{ corewpsites + customwpsites }}"
       sites: "{{ coresites + customsites }}"
   when: customfile.stat.exists
+  tags: [ 'common', 'facts' ]
 
 - name: Set up facts (core-only)
   set_fact:
@@ -24,6 +28,7 @@
       wpsites: corewpsites
       sites: coresites
   when: not customfile.stat.exists
+  tags: [ 'common', 'facts' ]
 
 - name: Uninstall deprecated packages or ones we don't want anymore
   apt: name={{ item }} state=absent purge=yes
