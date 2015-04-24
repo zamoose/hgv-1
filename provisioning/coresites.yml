@@ -5,6 +5,7 @@ coredomains:
   - php.hgv.dev
   - mail.hgv.dev
   - admin.hgv.dev
+  - vvv.hgv.dev
   - nowp.hgv.dev
 # Blank/generic sites to configure virtualhosts for
 coresites:
