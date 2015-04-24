@@ -24,6 +24,13 @@
   with_items: wpsites
   tags: [ 'wpsites' ]
 
+- name: "Enable PML viewing for PHP virtualhosts"
+  template:
+    src: pimpmylog.json
+    dest: "{{ wp_doc_root }}/admin/logs/config.user.d/{{ wpbackend }}-{{ item.site }}.json"
+  with_items: wpsites
+  tags: [ 'wpsites' ]
+
 - name: "Set facts for HHVM run"
   set_fact:
     wpbackend: hhvm
@@ -48,4 +55,3 @@
     mode: 0644
   with_items: wpsites
   tags: [ 'wpsites' ]
-  
