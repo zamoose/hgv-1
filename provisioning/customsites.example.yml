@@ -1,0 +1,108 @@
+---
+#
+# This file is an example of what the HGV provisioner will expect in order to
+# set up new, custom domains.
+#
+# In order to have HGV parse it, a file named "customsites.yml" must be
+# formatted as below and placed in [HGV install directory]/hgv_data/.
+#
+# Sites specified in hgv_data/customsites.yml will be provisioned automatically,
+# as long as a few conventions are followed.
+#
+# The result of this file should be:
+#
+# * Additional directories in hgv_data/, e.g.
+#
+#   hgv_data/
+#           |
+#           sites/
+#                |
+#                laravel.hgv.dev/
+#                |
+#                wp-api.hgv.dev/
+#                |             |
+#                |             [regular WordPress install]
+#                |
+#                foo.hgv.dev/
+#                           |
+#                           [regular WordPress install]
+#
+# * Host names added to /etc/hosts on the HGV VM, e.g.
+#   127.0.0.1 fpm.hgv.dev hhvm.hgv.dev php.hgv.dev mail.hgv.dev\
+#             admin.hgv.dev nowp.hgv.dev foo.hgv.dev bar.hgv.dev\
+#             baz.hgv.dev vvv.hgv.dev laravel.hgv.dev wp-api.hgv.dev
+#
+# * If you have the Vagrant hostsupdater plugin installed, you should have
+#   those host entries added to your OS' hosts file, e.g.
+#
+#   192.168.150.20  hgv.dev  # VAGRANT: [long alphanumeric hash]
+#   192.168.150.20  fpm.hgv.dev  # VAGRANT: [long alphanumeric hash]
+#   192.168.150.20  hhvm.hgv.dev  # VAGRANT: [long alphanumeric hash]
+#   192.168.150.20  php.hgv.dev  # VAGRANT: [long alphanumeric hash]
+#   192.168.150.20  mail.hgv.dev  # VAGRANT: [long alphanumeric hash]
+#   192.168.150.20  admin.hgv.dev  # VAGRANT: [long alphanumeric hash]
+#   192.168.150.20  nowp.hgv.dev  # VAGRANT: [long alphanumeric hash]
+#
+# NOTE: In order to make sure everything provisions correctly, any sites
+# added to the customsites/customwpsites lists *must* have a corresponding
+# entry added to the customdomains list as well. You may add *more* domains
+# to customdomains than you have sites, but it must have at *least* all
+# of the sites' domains specified.
+
+#
+# These are the domains to be provisioned
+#
+customdomains:
+  - nowp.hgv.dev
+  - foo.hgv.dev
+  - bar.hgv.dev
+  - baz.hgv.dev
+  - vvv.hgv.dev
+  - laravel.hgv.dev
+  - wp-api.hgv.dev
+
+#
+# These are non-WordPress sites HGV will provision.
+# By default, they will simply have an empty docroot and
+# a corresponding Nginx virtual host declaration with a basic
+# PHP configuration.
+#
+customsites:
+  - site: laravel.hgv.dev
+    comment: Simple PHP hosting for Laravel app
+
+#
+# These are WordPress sites HGV will provision.
+#
+customwpsites:
+    # This should be a DNS name and have a corresponding
+    # customdomains entry
+  - site: wp-api.hgv.dev
+    # This will be used as the default WordPress
+    # site title
+    comment: WP-API host to integrate with Laravel
+    # Future enhancement: You will be able to specify
+    # any version of WordPress supported by WP-CLI
+    # as an install target.
+    wp_version: latest
+    # This is a list of plugins to install from the
+    # WordPress.org plugin repository.
+    plugins:
+      - debug-bar
+      - wordpress-seo
+    # This is a list of themes to install from the
+    # WordPress.org theme repository.
+    themes:
+      - moesia
+      - ryu
+      - sela
+      - hemingway
+    # WordPress sites may leave off a list of plugins, themes, or
+    # both. If no additional plugins or themes are requested,
+    # a vanilla WordPress installation will be left behind.
+  - site: foo.hgv.dev
+    comment: Another WP site
+    wp_version: latest
+    plugins:
+      - wordpress-importer
+      - wordpress-seo
