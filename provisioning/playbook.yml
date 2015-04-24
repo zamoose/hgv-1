@@ -51,5 +51,6 @@
         tags: [ 'wordpress' ]
       }
     - wpsites
+    - sites
     - admin
     - xhprof
