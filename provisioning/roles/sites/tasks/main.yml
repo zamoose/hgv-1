@@ -1,1 +1,20 @@
 ---
+- name: "Set up Non-WP docroots"
+  file:
+    path: "{{ wp_doc_root }}/{{ item.site }}"
+    state: directory
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+  with_items: sites
+  tags: [ 'sites' ]
+
+- name: "Provision Non-WP virtualhosts"
+  template:
+    src: etc/nginx/conf.d/listener.conf
+    dest: /etc/nginx/conf.d/{{ item.site }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_items: sites
+  notify: nginx restart
+  tags: [ 'sites' ]
