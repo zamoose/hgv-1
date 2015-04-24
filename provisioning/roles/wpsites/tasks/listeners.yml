@@ -54,4 +54,12 @@
     group: root
     mode: 0644
   with_items: wpsites
+  notify: nginx restart
+  tags: [ 'wpsites' ]
+
+- name: "Enable PML viewing for HHVM virtualhosts"
+  template:
+    src: pimpmylog.json
+    dest: "{{ wp_doc_root }}/admin/logs/config.user.d/{{ wpbackend }}-{{ item.site }}.json"
+  with_items: wpsites
   tags: [ 'wpsites' ]
