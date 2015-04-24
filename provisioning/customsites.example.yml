@@ -89,7 +89,9 @@ customwpsites:
     # WordPress.org plugin repository.
     plugins:
       - debug-bar
+      - query-monitor
       - wordpress-seo
+      - json-rest-api
     # This is a list of themes to install from the
     # WordPress.org theme repository.
     themes:
