@@ -8,6 +8,9 @@ dir = Dir.pwd
 vagrant_dir = File.expand_path(File.dirname(__FILE__))
 vagrant_name = File.basename(dir)
 
+default_sites = vagrant_dir + '/provisioning/conf.d/default-sites.yml'
+custom_sites_dir = vagrant_dir + '/hgv_data/customsites'
+
 require 'yaml'
 
 domains_array = ['admin.hgv.dev', 'xhprof.hgv.dev', 'mail.hgv.dev']
@@ -15,25 +18,29 @@ domains_array = ['admin.hgv.dev', 'xhprof.hgv.dev', 'mail.hgv.dev']
 def domains_from_yml(file)
     ret = []
     domains = YAML.load_file(file)
-    domains['wp']['hhvm_domains'].each do |domain|
-        ret.push(domain)
-        ret.push('cache.' << domain)
-    end
-    # php_domains are optional in the user specified file
-    unless domains['wp']['php_domains'].nil?
-        domains['wp']['php_domains'].each do |domain|
+
+    domains.each do |key, value|
+        value['hhvm_domains'].each do |domain|
             ret.push(domain)
             ret.push('cache.' << domain)
+        end
+
+        unless value['php_domains'].nil?
+            value['php_domains'].each do |domain|
+                ret.push(domain)
+                ret.push('cache.' << domain)
+            end
         end
     end
     return ret
 end
 
-# Load default domains 
-domains_array += domains_from_yml './conf.d/default-sites.yml'
+# Load default domains
+domains_array += domains_from_yml(default_sites)
+
 # Load user specified domain file
-Dir.glob("./conf.d/custom-sites*.yml").each do |custom_file|
-    domains_array += domains_from_yml custom_file
+Dir.glob(custom_sites_dir + '/*.yml').each do |custom_file|
+    domains_array += domains_from_yml(custom_file)
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -47,7 +54,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |vb|
-        vb.customize ["modifyvm", :id, "--memory", "1024"]
+        # vb.customize ["modifyvm", :id, "--memory", "1024"]
+        vb.customize ["modifyvm", :id, "--memory", "512"]
         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         vb.name = vagrant_name
