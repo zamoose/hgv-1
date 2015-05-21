@@ -73,6 +73,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # To avoid stdin/tty issues
     config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
+    # Run base HGV provisioning step
     config.vm.provision "shell" do |s|
         s.path = "bin/hgv-init.sh"
         s.keep_color = true

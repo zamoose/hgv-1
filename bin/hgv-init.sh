@@ -17,6 +17,7 @@ echo "
 "
 
 LSB=`lsb_release -r | awk {'print $2'}`
+PROV_ROOT="/vagrant/provisioning"
 
 echo
 echo "Updating APT sources."
@@ -45,18 +46,11 @@ fi
 echo
 echo "Validating Ansible hostfile permissions."
 echo
-chmod 644 /vagrant/provisioning/hosts
+chmod 644 $PROV_ROOT/hosts
 
 # More continuous scroll of the ansible standard output buffer
 export PYTHONUNBUFFERED=1
 export ANSIBLE_FORCE_COLOR=true
 
-$ANS_BIN /vagrant/provisioning/playbook.yml -i'127.0.0.1,'
-shopt -s nullglob
-for file in /vagrant/conf.d/default-sites.yml /vagrant/conf.d/custom-sites*.yml
-do
-    echo "### Provisioning $file ###"
-    $ANS_BIN /vagrant/provisioning/wordpress.yml -i'127.0.0.1,' --extra-vars="@$file"
-done
-
+$ANS_BIN $PROV_ROOT/playbook.yml -i'127.0.0.1,'
 echo
