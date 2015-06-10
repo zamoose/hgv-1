@@ -9,6 +9,8 @@
         role: wordpress,
         enviro: "{{ wp.enviro }}",
         domain: "{{ wp.hhvm_domains[0] }}",
+        mysql_import: "{{ wp.mysql_import | default(False) }}",
+        mysql_backup: "{{ wp.mysql_backup | default(False) }}",
         tags: [ 'wordpress' ]
       }
     - {
