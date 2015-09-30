@@ -1,5 +1,6 @@
 <?php
 /**
+* {{ ansible_managed }}
 * The base configurations of the WordPress.
 *
 * This file has the following configurations: MySQL settings, Table Prefix,
@@ -54,7 +55,9 @@ if ( file_exists( dirname( __FILE__ ) . '/local-config.php' ) ) {
 *
 * @since 2.6.0
 */
-{{ wp_salt.stdout }}
+if ( file_exists( dirname( __FILE__ ) . '/wp-salts.php' ) ) {
+    include( dirname( __FILE__ ) . '/wp-salts.php' );
+}
 
 /**#@-*/
 
